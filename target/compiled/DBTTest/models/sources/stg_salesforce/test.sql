@@ -1,6 +1,6 @@
 WITH source AS (
 
-    select * from salesforce.account 
+    select * from DBT_TEST_LIVEDATA_RK.account 
 
     ),renamed as (
       select 

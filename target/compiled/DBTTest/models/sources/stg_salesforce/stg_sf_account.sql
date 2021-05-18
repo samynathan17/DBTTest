@@ -3,7 +3,7 @@
 
     WITH source AS (
 
-    select * from salesforce.account 
+    select * from DBT_TEST_LIVEDATA_RK.account 
 
     ),renamed as (
       select
@@ -20,7 +20,7 @@
         TYPE AS Account_Type,
         ID AS Source_ID,
         IS_DELETED AS Active_Flag,
-        ACCOUNT_NUMBER AS ACCOUNT_NUMBER,
+        --ACCOUNT_NUMBER AS ACCOUNT_NUMBER,
         INDUSTRY AS INDUSTRY,
         ANNUAL_REVENUE AS ANNUAL_REVENUE,
         OWNER_ID AS OWNER_ID,

@@ -1,5 +1,9 @@
 
-with dates as (
+
+
+
+with source as 
+(
 
     
 
@@ -55,6 +59,12 @@ with rawdata as (
      + 
     
     p9.generated_number * pow(2, 9)
+     + 
+    
+    p10.generated_number * pow(2, 10)
+     + 
+    
+    p11.generated_number * pow(2, 11)
     
     
     + 1
@@ -91,6 +101,12 @@ with rawdata as (
      cross join 
     
     p as p9
+     cross join 
+    
+    p as p10
+     cross join 
+    
+    p as p11
     
     
 
@@ -98,7 +114,7 @@ with rawdata as (
 
     select *
     from unioned
-    where generated_number <= 720
+    where generated_number <= 2555
     order by generated_number
 
 
@@ -114,7 +130,7 @@ all_periods as (
     dateadd(
         day,
         row_number() over (order by 1) - 1,
-        to_date('01/01/2020', 'mm/dd/yyyy')
+        to_date('01/01/2015', 'dd/mm/yyyy')
         )
 
 
@@ -135,8 +151,9 @@ filtered as (
 select * from filtered
 
 
-)
+) ,renamed as(
 select
+      d.date_day AS Calendar_ID,
       d.date_day as cldr_date,
       cast(
     date_trunc('month', d.date_day)
@@ -258,17 +275,18 @@ select
 
         as date)
  as date) as week_end_date,
-        to_char(d.date_day, 'Dy') as day_name,
-      to_char(d.date_day, 'MON') as month_name,
+        to_char(d.date_day, 'Dy') as day_short_name,
+      to_char(d.date_day, 'MON') as month_short_name,
+        cast(to_char(d.date_day, 'MMMM') as varchar(20))as month_name,
         cast(date_part('day', d.date_day) as 
     int
 ) as cldr_day_num,
         cast(date_part('week', d.date_day) as 
     int
 ) as cldr_week_num,
-        cast(date_part('quarter', d.date_day) as 
+        'Q' || cast(date_part('quarter', d.date_day) as 
     int
-) as cldr_qtr_num,
+) as cldr_qtr,
         cast(date_part('year', d.date_day) as 
     int
 ) as year,
@@ -291,5 +309,9 @@ select
  as DW_INS_UPD_DTS,
       'D_CALENDAR_DIM_LOAD' as DW_SESSION_NM
 from
-    dates d
-order by 1
+    source  d
+order by 2)
+
+
+
+select * from renamed

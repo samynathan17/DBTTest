@@ -1,9 +1,9 @@
 
   create or replace  view DATAFLOTEST_DATABASE.dbt_test_staging.stg_sf_employee  as (
     With user AS(
-    select *  from salesforce.user
+    select *  from DBT_TEST_LIVEDATA_RK.user
 ),usr_role AS(
-    select *  from salesforce.user_role
+    select *  from DBT_TEST_LIVEDATA_RK.user_role
 ),renamed AS(
  SELECT
    md5(cast(
@@ -16,6 +16,7 @@
     varchar
 )) AS employee_id,
    ACCOUNT_ID AS emp_account_id,
+   user.id AS source_id,
    COMPANY_NAME AS org_name,
    EMPLOYEE_NUMBER AS employee_code,
    FIRST_NAME AS first_name,

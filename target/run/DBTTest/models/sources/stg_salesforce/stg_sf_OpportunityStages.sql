@@ -4,7 +4,7 @@
 
 
     WITH source AS (
-       select *  from salesforce.OPPORTUNITY_STAGE 
+       select *  from DBT_TEST_LIVEDATA_RK.OPPORTUNITY_STAGE 
     ),renamed as(
         SELECT
         md5(cast(

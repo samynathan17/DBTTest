@@ -1,0 +1,1 @@
+select * from SALESFORCE_RK.USER_ROLE

@@ -1,39 +1,41 @@
 
 
 
-    WITH source AS (
-       select *  from salesforce.contact 
+    WITH contact AS (
+       select *  from DBT_TEST_LIVEDATA_RK.contact 
+    ),User AS (
+        select *  from DBT_TEST_LIVEDATA_RK.user
     ),renamed as(
-    SELECT 
+      SELECT 
         md5(cast(
     
-    coalesce(cast(id as 
+    coalesce(cast(contact.id as 
     varchar
 ), '')
 
  as 
     varchar
 )) AS contact_id, 
-        salutation AS salutation, 
-        NAME AS contact_name, 
-        last_name AS last_name, 
-        first_name AS first_name, 
-        phone AS contact_number, 
-        mobile_phone AS mobile_phone, 
-        home_phone AS home_phone, 
-        email AS contact_email, 
-        id AS source_id, 
-        department AS department, 
-        lead_source AS lead_source, 
-        NULL AS organization_id, 
-        NULL AS employee_id, 
-        account_id AS account_id, 
+        contact.salutation AS salutation, 
+        contact. NAME AS contact_name, 
+        contact.last_name AS last_name, 
+        contact.first_name AS first_name, 
+        contact.phone AS contact_number, 
+        contact.mobile_phone AS mobile_phone, 
+        contact.home_phone AS home_phone, 
+        contact.email AS contact_email, 
+        contact.id AS source_id, 
+        contact.department AS department, 
+        contact.lead_source AS lead_source, 
+        user.COMPANY_NAME AS organization_id, 
+        user.ID AS employee_id, 
+        contact.account_id AS account_id, 
         NULL AS contact_age_group, 
         NULL AS contact_income, 
         NULL AS dependent, 
         NULL AS contact_type, 
-        IS_DELETED AS active, 
-        OWNER_ID AS owner_id,
+        contact.IS_DELETED AS active, 
+        contact.OWNER_ID AS owner_id,
         'D_CONTACT_DIM_LOAD' AS dw_session_nm, 
         
     current_timestamp::
@@ -41,8 +43,8 @@
 
  AS DW_INS_UPD_DTS 
      FROM 
-       source
-
+       contact
+       left join user on contact.id = user.CONTACT_ID
     )    
     
 

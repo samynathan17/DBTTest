@@ -1,0 +1,1 @@
+select * from "RKLIVE_NEWDATA"."USER_ROLE"

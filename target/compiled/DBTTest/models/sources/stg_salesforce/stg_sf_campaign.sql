@@ -1,7 +1,7 @@
 
     WITH source AS (
 
-    select * from salesforce.CAMPAIGN 
+    select * from DBT_TEST_LIVEDATA_RK.CAMPAIGN 
 
     ),renamed as (
 

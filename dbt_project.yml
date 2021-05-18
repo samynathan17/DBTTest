@@ -39,12 +39,32 @@ models:
 # intermediate layer settings
       intermediate:
           materialized: view
-          schema: intermediate
-
+          schema: UAT_Testing   
+      UAT_Testing:
+          materialized: table
+          schema: UAT_Testing    
+      
 # warehouse layer settings
       marts:
           materialized: table
           schema: marts
+# source layer settings
+      Stage_Layer:
+          materialized: table
+          schema: ETL
+# intermediate layer settings
+      Views:
+          materialized: view
+          schema: ETL    
+# Reusable Code settings
+      Views:
+          materialized: view
+          schema: ETL   
+# warehouse layer settings
+      Targets:
+          materialized: table
+          schema: ETL
+
 # util module settings
       utils:
           materialized: table
@@ -57,7 +77,6 @@ seeds:
           
 vars:
   enable_salesforce_source : true
-
   enable_crm_warehouse :                true
   enable_finance_warehouse :            false
   enable_projects_warehouse :           false
@@ -66,9 +85,9 @@ vars:
   enable_product_warehouse :            false
   enable_subscriptions_warehouse :      false
 
-
   # Salesforce Schema and Table info
-  salesforce_schema_name           : salesforce
+  
+  salesforce_schema_name           : SALESFORCE_RK
   salesforce_crm_etl_name          : fivetran 
   salesforce_account_table_name    : account
   salesforce_lead_table_name       : lead
@@ -77,12 +96,11 @@ vars:
   salesforce_user_role_table_name  : user_role
   salesforce_contact_table_name    : contact
   salesforce_case_table_name       : case
-  salesforce_Campaign_table_name   : CAMPAIGN
-  salesforce_product_table_name    : product_2
-  salesforce_oppo_stage_table_name : OPPORTUNITY_STAGE
-  salesforce_opportunity_line_item_table_name : OPPORTUNITY_LINE_ITEM
-
+  salesforce_period_table_name     : period
+  salesforce_Campaign_table_name   : Campaign
+  salesforce_product_table_name    : # product_2
+  salesforce_oppo_stage_table_name   : OPPORTUNITY_STAGE
+  salesforce_opportunity_line_item_table_name: # OPPORTUNITY_LINE_ITEM 
   
-
-
-
+  snapshot_sf_schema : snapshots
+  opportunity_snap : OPPORTUNITY_SNAPSHOT_CHECK

@@ -4,27 +4,31 @@
 
 
     WITH source AS (
-       select *  from salesforce.contact 
-    ),renamed as(
-    SELECT
-        NULL AS Address_id,
-        concat(MAILING_STREET,'|',OTHER_STREET) AS STREET,
-        concat(MAILING_CITY,'|',OTHER_CITY) AS CITY,
-        concat(MAILING_STATE,'|',OTHER_STATE) AS STATE,
-        concat(MAILING_POSTAL_CODE,'|',OTHER_POSTAL_CODE) AS POSTAL_CODE,
-        concat(MAILING_COUNTRY,'|',OTHER_COUNTRY) AS COUNTRY,
-        NULL AS address_type,
-        'D_ADDRESS_DIM_LOAD'  AS DW_SESSION_NM,
-        
-    current_timestamp::
-    timestamp_ntz
-
- AS DW_INS_UPD_DTS 
-     FROM
-        source
-    )    
+       select *  from DBT_TEST_LIVEDATA_RK.contact 
+    ),union_addr AS(
+        SELECT 
+            id as address_id,
+            account_id AS account_id,
+            MAILING_STREET AS STREET,
+            MAILING_CITY AS CITY,
+            MAILING_STATE AS STATE,
+            MAILING_POSTAL_CODE AS POSTAL_CODE,
+            MAILING_COUNTRY AS COUNTRY,
+          'Billing' as address_type from source
+        union 
+        SELECT
+            id as address_id,
+            account_id AS account_id,
+            OTHER_STREET AS STREET,
+            OTHER_CITY AS CITY,
+            OTHER_STATE AS STATE,
+            OTHER_POSTAL_CODE AS POSTAL_CODE,
+            OTHER_COUNTRY As COUNTRY, 
+            'Shipping' as address_type from source
+    )
+    
     
 
 
-select * from renamed
+select * from union_addr
   );

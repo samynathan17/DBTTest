@@ -2,14 +2,21 @@
 
 
     WITH OPPORTUNITY AS (
-       select *  from salesforce.opportunity 
+       select *  from DBT_TEST_LIVEDATA_RK.opportunity 
     ),contact AS(
-        select *  from salesforce.contact    
-    ),OPPORTUNITY_LINE_ITEM AS(
-        select *  from salesforce.OPPORTUNITY_LINE_ITEM    
+        select *  from DBT_TEST_LIVEDATA_RK.contact    
+    ),
+    emp AS(
+        select *  from DBT_TEST_LIVEDATA_RK.user    
+    ),
     
-    ),OPPORTUNITY_STAGE AS(
-        select *  from salesforce.OPPORTUNITY_STAGE    
+      OPPORTUNITY_LINE_ITEM AS(
+      select NULL AS OPPORTUNITY_ID,NULL AS PRODUCT_2_ID,NULL AS PRODUCT_CODE,NULL AS TOTAL_PRICE
+      )
+     
+
+    ,OPPORTUNITY_STAGE AS(
+        select *  from DBT_TEST_LIVEDATA_RK.OPPORTUNITY_STAGE    
     )
     ,renamed as(
     SELECT
@@ -23,11 +30,21 @@
     varchar
 )) AS opp_id,
         OPPORTUNITY.NAME AS opp_name,
-        OPPORTUNITY.TYPE AS Type,
-        OPPORTUNITY.ACCOUNT_ID AS opp_account_id,
-        NULL AS opp_employee_id,
+        OPPORTUNITY.TYPE AS opp_Type,
+        cast('fivetran' as varchar(50)) AS opp_entity_id, 
+        OPPORTUNITY.ACCOUNT_ID AS opp_account_id,        
+        OPPORTUNITY.OWNER_ID AS opp_employee_id,
         OPPORTUNITY.ID AS Source_id,
+        OPPORTUNITY_STAGE.SORT_ORDER AS opp_stage_id,
+        OPPORTUNITY.IS_WON as OPP_WON,
+        OPPORTUNITY.IS_CLOSED as OPP_CLOSED,
+        OPPORTUNITY.stage_name AS opp_stage_name,
+        -- 
+        --   OPPORTUNITY.PROBABILITY as OPP_PROBABILITY,
+        --   
+        OPPORTUNITY.FORECAST_CATEGORY as OPP_FORECAST_CATEGORY,
         OPPORTUNITY.AMOUNT AS opp_amount,
+        --OPPORTUNITY.EXPECTED_REVENUE as opp_EXPECTED_REVENUE,
         NULL AS opp_amount_without_disc,
         NULL AS opp_expectd_Clouser_Dt,
         OPPORTUNITY.CONTACT_ID AS Contact_id,
@@ -40,11 +57,9 @@
         NULL AS opp_prospect_Dt,
         NULL AS opp_stage_calc_id,
         OPPORTUNITY_STAGE.CREATED_DATE AS opp_stage_start_dt,
-        OPPORTUNITY.CLOSE_DATE AS opp_stage_end_dt,
-        OPPORTUNITY_STAGE.id AS opp_stage_id,
-        OPPORTUNITY_STAGE.MASTER_LABEL AS opp_stage_name,
+        OPPORTUNITY.CLOSE_DATE AS opp_stage_end_dt,        
         NULL AS lead_lost_reason,
-        OPPORTUNITY.CAMPAIGN_ID AS campaign_id,
+        --OPPORTUNITY.CAMPAIGN_ID AS campaign_id,
         NULL AS opp_competitor,
         NULL AS opp_on_hold_flag,
         OPPORTUNITY_LINE_ITEM. PRODUCT_2_ID AS opp_product_id,
@@ -56,7 +71,6 @@
         NULL AS opp_prd_discount,
         OPPORTUNITY. STAGE_NAME AS opp_source_name,
         OPPORTUNITY. IS_DELETED AS opp_active,
-        OPPORTUNITY. OWNER_ID AS OWNER_ID,
         NULL AS DW_CURR_FLG,
         NULL AS EFFCT_START_DATE,
         NULL AS EFFCT_END_DATE,
@@ -68,10 +82,11 @@
  AS DW_INS_UPD_DTS 
       FROM
         OPPORTUNITY 
-        left join contact on OPPORTUNITY.Owner_id  =  contact.Owner_id
+        left join emp on OPPORTUNITY.Owner_id  =  emp.id
+        left join contact on emp.contact_id  =  contact.id
         left join OPPORTUNITY_LINE_ITEM on OPPORTUNITY.ID = OPPORTUNITY_LINE_ITEM.OPPORTUNITY_ID
         left join OPPORTUNITY_STAGE on OPPORTUNITY.stage_name = OPPORTUNITY_STAGE.MASTER_LABEL
-
+     
     )    
     
 

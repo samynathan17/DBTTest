@@ -2,7 +2,7 @@
 
 
     WITH source AS (
-        SELECT * from salesforce.product_2 
+        SELECT * from DBT_TEST_LIVEDATA_RK.product_2 
     ),renamed as(
         SELECT
             NULL AS account_id,

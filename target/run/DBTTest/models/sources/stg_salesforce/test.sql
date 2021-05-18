@@ -2,7 +2,7 @@
   create or replace  view DATAFLOTEST_DATABASE.dbt_test_staging.test  as (
     WITH source AS (
 
-    select * from salesforce.account 
+    select * from DBT_TEST_LIVEDATA_RK.account 
 
     ),renamed as (
       select 

@@ -1,0 +1,7 @@
+
+
+      create or replace transient table DATAFLOTEST_DATABASE.dbt_test_SF_RKLIVE_06012021.OPPORTUNITY_STAGE  as
+      (select * from "RKLIVE_NEWDATA"."OPPORTUNITY_STAGE" 
+WHERE CREATED_DATE  BETWEEN  '2017-02-01T01:21:08+00:00' and '2020-01-31T01:21:08+00:00'
+      );
+    
