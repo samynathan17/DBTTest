@@ -153,7 +153,7 @@ WITH PERIOD AS(
             type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Deal deal  inner join calendar on deal.PROPERTY_CLOSEDATE=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Deal deal  inner join calendar on to_date(PROPERTY_CLOSEDATE)=CLDR_DATE
          where Upper(DEAL_PIPELINE_STAGE_ID) like '%CLOSED%LOS%' 
          and PROPERTY_HS_IS_CLOSED='true'
          and timeframe_type is not null

@@ -290,6 +290,6 @@
 )
 
 
-select * from segr_metric --where r_type='Year' and r_metric_id= 85
+select * from compare_result --where r_type='Year' and r_metric_id= 85
       );
     
