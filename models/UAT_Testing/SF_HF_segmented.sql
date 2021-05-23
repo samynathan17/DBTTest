@@ -173,8 +173,10 @@ WITH PERIOD AS(
         left join DBT_SALESDATAFLO.Stg_Deal_Stage as OPPORTUNITY_STG on OPPORTUNITY_STG.SOURCE_DEAL_ID = deal.Source_DEAL_ID 
         and OPPORTUNITY_STG.Source_type = deal.Source_type 
         inner join calendar on to_date(deal.PROPERTY_CREATEDATE)=CLDR_DATE
+        ,DBT_SALESDATAFLO.Stg_Owner usr
         where 
          timeframe_type is not null
+         and deal.Owner_id  =  usr.Source_OWNER_ID and deal.Source_type = usr.Source_type
          and to_date(deal.PROPERTY_CREATEDATE) between calendar.start_date and calendar.end_date
         group by 4,5,6,7,8   
     
@@ -191,11 +193,10 @@ WITH PERIOD AS(
             timeframe_type as r_timeframe_type,
             year as r_year
         from DBT_SALESDATAFLO.Stg_Deal deal 
-        inner join calendar on to_date(deal.PROPERTY_CREATEDATE)=CLDR_DATE, DBT_SALESDATAFLO.Stg_Owner hs
+        inner join calendar on to_date(deal.PROPERTY_CREATEDATE)=CLDR_DATE, DBT_SALESDATAFLO.Stg_Owner usr
          where 
          timeframe_type is not null
-         and deal.OWNER_ID=hs.Source_OWNER_ID
-         and deal.Source_type= hs.Source_type
+         and deal.Owner_id  =  usr.Source_OWNER_ID and deal.Source_type = usr.Source_type
          and to_date(deal.PROPERTY_CREATEDATE) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7,8
     
@@ -203,17 +204,18 @@ WITH PERIOD AS(
 
         select
            
-            count(Source_ID) as r_count,
-            COALESCE(sum(PROPERTY_ANNUALREVENUE),0) AS r_amount,
+            count(cmpy.Source_ID) as r_count,
+            COALESCE(sum(cmpy.PROPERTY_ANNUALREVENUE),0) AS r_amount,
             85 AS r_metric_id,
-            PROPERTY_NAME as r_segment_name,
-            Source_type as r_Source_type,
-            type as r_type,
+            cmpy.PROPERTY_NAME as r_segment_name,
+            cmpy.Source_type as r_Source_type,
+            calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Company inner join calendar on to_date(PROPERTY_CREATEDATE)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Company cmpy inner join calendar on to_date(PROPERTY_CREATEDATE)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where 
          timeframe_type is not null
+         and cmpy.PROPERTY_HUBSPOT_OWNER_ID  =  usr.Source_OWNER_ID and cmpy.Source_type = usr.Source_type
          and to_date(PROPERTY_CREATEDATE) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7,8
 
@@ -307,4 +309,4 @@ WITH PERIOD AS(
 )
 
 
-select * from compare_result where r_type='Year' and r_metric_id= 32
+select * from compare_result where r_type='Year' and R_SOURCE_TYPE ='HS_RKLIVE_01042021' --and r_metric_id= 32

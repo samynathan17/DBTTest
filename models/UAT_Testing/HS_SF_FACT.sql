@@ -141,33 +141,35 @@ WITH PERIOD AS(
         union   --deal won -1 PROPERTY_HS_CREATEDATE
         select
            
-            count(Source_DEAL_ID) as r_count,
-            COALESCE(sum(PROPERTY_AMOUNT),0) AS r_amount,
+            count(deal.Source_DEAL_ID) as r_count,
+            COALESCE(sum(deal.PROPERTY_AMOUNT),0) AS r_amount,
             1 AS r_metric_id,
-            Source_type as r_Source_type,
-            type as r_type,
+            deal.Source_type as r_Source_type,
+            calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year 
-        from DBT_SALESDATAFLO.Stg_Deal deal inner join calendar on to_date(deal.PROPERTY_CLOSEDATE)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Deal deal inner join calendar on to_date(deal.PROPERTY_CLOSEDATE)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where Upper(DEAL_PIPELINE_STAGE_ID) like '%CLOSED%WON%' 
          and PROPERTY_HS_IS_CLOSED='true'
          and timeframe_type is not null
+         and deal.Owner_id  =  usr.Source_OWNER_ID and deal.Source_type = usr.Source_type
          and to_date(PROPERTY_CLOSEDATE) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7
        
         union   -- Deal Los -10
         select
            
-            COALESCE(count(Source_DEAL_ID),0) as r_count,
-            COALESCE(sum(PROPERTY_AMOUNT),0) AS r_amount,
+            COALESCE(count(deal.Source_DEAL_ID),0) as r_count,
+            COALESCE(sum(deal.PROPERTY_AMOUNT),0) AS r_amount,
             10 AS r_metric_id,
-            Source_type as r_Source_type,
-            type as r_type,
+            deal.Source_type as r_Source_type,
+            calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Deal deal  inner join calendar on to_date(PROPERTY_CLOSEDATE)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Deal deal  inner join calendar on to_date(PROPERTY_CLOSEDATE)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where Upper(DEAL_PIPELINE_STAGE_ID) like '%CLOSED%LOS%' 
          and PROPERTY_HS_IS_CLOSED='true'
+         and deal.Owner_id  =  usr.Source_OWNER_ID and deal.Source_type = usr.Source_type
          and timeframe_type is not null
          and to_date(PROPERTY_CLOSEDATE) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7
@@ -175,81 +177,86 @@ WITH PERIOD AS(
       union -- calls -39
         select
            
-            count(Source_ID) as r_count,
+            count(eng.Source_ID) as r_count,
             0 AS r_amount,
             39 AS r_metric_id,
-            Source_type as r_Source_type,
+            eng.Source_type as r_Source_type,
             calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(CREATED_AT)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(eng.CREATED_AT)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where Upper(eng.TYPE) ='CALL'
+         and eng.Owner_id  =  usr.Source_OWNER_ID and eng.Source_type = usr.Source_type
          and timeframe_type is not null
-         and to_date(CREATED_AT) between calendar.start_date and calendar.end_date 
+         and to_date(eng.CREATED_AT) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7
 
     union -- Task completed -89
         select
            
-            count(Source_ID) as r_count,
+            count(eng.Source_ID) as r_count,
             0 AS r_amount,
             89 AS r_metric_id,
-            Source_type as r_Source_type,
+            eng.Source_type as r_Source_type,
             calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(CREATED_AT)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(eng.CREATED_AT)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where Upper(eng.TYPE) ='TASK'
+         and eng.Owner_id  =  usr.Source_OWNER_ID and eng.Source_type = usr.Source_type
          and timeframe_type is not null
-         and to_date(CREATED_AT) between calendar.start_date and calendar.end_date 
+         and to_date(eng.CREATED_AT) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7     
 
     union -- (Marketing MEETING) -71
         select
            
-            count(Source_ID) as r_count,
+            count(eng.Source_ID) as r_count,
             0 AS r_amount,
             71 AS r_metric_id,
-            Source_type as r_Source_type,
+            eng.Source_type as r_Source_type,
             calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(CREATED_AT)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(eng.CREATED_AT)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where Upper(eng.TYPE) ='MEETING'
+         and eng.Owner_id  =  usr.Source_OWNER_ID and eng.Source_type = usr.Source_type
          and timeframe_type is not null
-         and to_date(CREATED_AT) between calendar.start_date and calendar.end_date 
+         and to_date(eng.CREATED_AT) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7      
 
     union -- (Notes) -76
         select
            
-            count(Source_ID) as r_count,
+            count(eng.Source_ID) as r_count,
             0 AS r_amount,
             76 AS r_metric_id,
-            Source_type as r_Source_type,
+            eng.Source_type as r_Source_type,
             calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(CREATED_AT)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(eng.CREATED_AT)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where Upper(eng.TYPE) ='NOTE'
+         and eng.Owner_id  =  usr.Source_OWNER_ID and eng.Source_type = usr.Source_type
          and timeframe_type is not null
-         and to_date(CREATED_AT) between calendar.start_date and calendar.end_date 
+         and to_date(eng.CREATED_AT) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7       
 
     union -- (Emails Logged) -66
         select
            
-            count(Source_ID) as r_count,
+            count(eng.Source_ID) as r_count,
             0 AS r_amount,
             66 AS r_metric_id,
-            Source_type as r_Source_type,
+            eng.Source_type as r_Source_type,
             calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(CREATED_AT)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Engagement eng inner join calendar on to_date(eng.CREATED_AT)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where Upper(eng.TYPE) ='EMAIL'
+         and eng.Owner_id  =  usr.Source_OWNER_ID and eng.Source_type = usr.Source_type
          and timeframe_type is not null
-         and to_date(CREATED_AT) between calendar.start_date and calendar.end_date 
+         and to_date(eng.CREATED_AT) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7            
 
 
@@ -340,9 +347,9 @@ WITH PERIOD AS(
 
 )
 
-select * from r_metric  where 1=1
+select * from compare_result  where 1=1
   and R_SOURCE_TYPE ='HS_RKLIVE_01042021'
-  and r_metric_id=1
+--  and r_metric_id=1
   and r_type='Year'
 
 
