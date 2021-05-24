@@ -1,0 +1,1 @@
+select * from DATAFLOTEST_DATABASE.facebook_ads.basic_ad

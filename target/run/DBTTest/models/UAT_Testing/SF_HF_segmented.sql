@@ -36,115 +36,130 @@
 ),segr_metric AS (
     --- SF  New Leads by industry 7
        select 
-            count(source_id) as r_count,
+            count(led.source_id) as r_count,
             0 AS r_amount,
             7 AS r_metric_id,
-            INDUSTRY as r_segment_name,
-            Source_type as r_Source_type, 
+            led.INDUSTRY as r_segment_name,
+            led.Source_type as r_Source_type, 
             PERIOD.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Lead ,PERIOD  
+        from DBT_SALESDATAFLO.Stg_Lead led ,PERIOD,DBT_SALESDATAFLO.STG_USER  usr
         where 
          timeframe_type is not null
-         and to_date(CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
+         and owner_id=usr.source_id
+         and led.Source_type=usr.Source_type
+         --and owner_id in (select distinct source_id from DBT_SALESDATAFLO.STG_USER)
+         and to_date(led.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
         group by 4,5,6,7,8
 
          -- New Leads by Lead Source 18
      union
      select 
-            count(source_id) as r_count,
+            count(led.source_id) as r_count,
             0 AS r_amount,
             18 AS r_metric_id,
-            LEAD_SOURCE as r_segment_name,
-            Source_type as r_Source_type, 
+            led.LEAD_SOURCE as r_segment_name,
+            led.Source_type as r_Source_type, 
             PERIOD.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Lead ,PERIOD  
+        from DBT_SALESDATAFLO.Stg_Lead led,PERIOD,DBT_SALESDATAFLO.STG_USER  usr
         where 
          timeframe_type is not null
-         and to_date(CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
+         and owner_id=usr.source_id
+         and led.Source_type=usr.Source_type
+         and to_date(led.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
         group by 4,5,6,7,8 
 
       union    --New Leads by Lead Status 19      
      select 
-            count(source_id) as r_count,
+            count(led.source_id) as r_count,
             0 AS r_amount,
             19 AS r_metric_id,
-            STATUS as r_segment_name,
-            Source_type as r_Source_type, 
+            led.STATUS as r_segment_name,
+            led.Source_type as r_Source_type, 
             PERIOD.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Lead ,PERIOD  
+        from DBT_SALESDATAFLO.Stg_Lead led,PERIOD,DBT_SALESDATAFLO.STG_USER  usr
         where 
          timeframe_type is not null
-         and to_date(CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
+         and owner_id=usr.source_id
+         and led.Source_type=usr.Source_type
+         and to_date(led.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
         group by 4,5,6,7,8 
 
       union    --Accounts by Type 28      
      select 
-            count(source_id) as r_count,
+            count(acc.source_id) as r_count,
             0 AS r_amount,
             28 AS r_metric_id,
             acc.TYPE as r_segment_name,
-            Source_type as r_Source_type, 
+            acc.Source_type as r_Source_type, 
             PERIOD.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Account acc ,PERIOD  
+        from DBT_SALESDATAFLO.Stg_Account acc ,PERIOD, DBT_SALESDATAFLO.STG_USER  usr
         where 
          timeframe_type is not null
-         and to_date(CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
+         and owner_id=usr.source_id
+         and acc.Source_type=usr.Source_type
+         and to_date(acc.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
         group by 4,5,6,7,8 
        
       union    --Leads by emp_id= 30     
      select 
-            count(source_id) as r_count,
+            count(led.source_id) as r_count,
             0 AS r_amount,
             30 AS r_metric_id,
-            owner_id as r_segment_name,
-            Source_type as r_Source_type, 
+            led.owner_id as r_segment_name,
+            led.Source_type as r_Source_type, 
             PERIOD.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Lead ,PERIOD  
+        from DBT_SALESDATAFLO.Stg_Lead led,PERIOD,DBT_SALESDATAFLO.STG_USER  usr
         where 
          timeframe_type is not null
-         and to_date(CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
+         and owner_id=usr.source_id
+         and led.Source_type=usr.Source_type
+         and to_date(led.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
         group by 4,5,6,7,8  
 
       union    --Leads by location= 31   
      select 
-            count(source_id) as r_count,
+            count(led.source_id) as r_count,
             0 AS r_amount,
             31 AS r_metric_id,
             concat(led.street,' ',led.city,' ',led.state,' ',led.postal_code,' ',led.country) as r_segment_name,
-            Source_type as r_Source_type, 
+            led.Source_type as r_Source_type, 
             PERIOD.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Lead as led ,PERIOD  
+        from DBT_SALESDATAFLO.Stg_Lead as led ,PERIOD,DBT_SALESDATAFLO.STG_USER  usr
         where 
          timeframe_type is not null
-         and to_date(CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
+         and owner_id=usr.source_id
+         and led.Source_type=usr.Source_type
+         and to_date(led.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
         group by 4,5,6,7,8   
      
       union    --Opportunities by type = 32  
      select 
-            count(source_id) as r_count,
+            count(oppo.source_id) as r_count,
             sum(oppo.AMOUNT) AS r_amount,
             32 AS r_metric_id,
             oppo.TYPE as r_segment_name,
-            Source_type as r_Source_type, 
+            oppo.Source_type as r_Source_type, 
             PERIOD.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Opportunity as oppo ,PERIOD  
+        from DBT_SALESDATAFLO.Stg_Opportunity as oppo ,PERIOD,DBT_SALESDATAFLO.STG_USER  usr
         where 
          timeframe_type is not null
-         and to_date(CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
+         and owner_id=usr.source_id
+         and oppo.Source_type=usr.Source_type
+         and to_date(oppo.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
         group by 4,5,6,7,8   
   -- HS
        union    --Deals by Original Source Data= 52 
@@ -157,10 +172,14 @@
             calendar.TYPE as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Deal deal left join DBT_SALESDATAFLO.Stg_Deal_Stage as OPPORTUNITY_STG on OPPORTUNITY_STG.SOURCE_DEAL_ID = deal.Source_DEAL_ID 
-        and OPPORTUNITY_STG.Source_type = deal.Source_type  inner join calendar on to_date(deal.PROPERTY_CREATEDATE)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Deal deal 
+        left join DBT_SALESDATAFLO.Stg_Deal_Stage as OPPORTUNITY_STG on OPPORTUNITY_STG.SOURCE_DEAL_ID = deal.Source_DEAL_ID 
+        and OPPORTUNITY_STG.Source_type = deal.Source_type 
+        inner join calendar on to_date(deal.PROPERTY_CREATEDATE)=CLDR_DATE
+        ,DBT_SALESDATAFLO.Stg_Owner usr
         where 
          timeframe_type is not null
+         and deal.Owner_id  =  usr.Source_OWNER_ID and deal.Source_type = usr.Source_type
          and to_date(deal.PROPERTY_CREATEDATE) between calendar.start_date and calendar.end_date
         group by 4,5,6,7,8   
     
@@ -168,35 +187,38 @@
 
         select
            
-            count(Source_DEAL_ID) as r_count,
-            COALESCE(sum(PROPERTY_AMOUNT),0) AS r_amount,
+            count(deal.Source_DEAL_ID) as r_count,
+            COALESCE(sum(deal.PROPERTY_AMOUNT),0) AS r_amount,
             62 AS r_metric_id,
-            DEAL_PIPELINE_STAGE_ID as r_segment_name,
-            Source_type as r_Source_type,
-            type as r_type,
+            deal.DEAL_PIPELINE_STAGE_ID as r_segment_name,
+            deal.Source_type as r_Source_type,
+            calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Deal deal inner join calendar on to_date(deal.PROPERTY_CREATEDATE)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Deal deal 
+        inner join calendar on to_date(deal.PROPERTY_CREATEDATE)=CLDR_DATE, DBT_SALESDATAFLO.Stg_Owner usr
          where 
          timeframe_type is not null
-         and to_date(PROPERTY_CREATEDATE) between calendar.start_date and calendar.end_date 
+         and deal.Owner_id  =  usr.Source_OWNER_ID and deal.Source_type = usr.Source_type
+         and to_date(deal.PROPERTY_CREATEDATE) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7,8
     
     union   --Revenue by Company 85
 
         select
            
-            count(Source_ID) as r_count,
-            COALESCE(sum(PROPERTY_ANNUALREVENUE),0) AS r_amount,
+            count(cmpy.Source_ID) as r_count,
+            COALESCE(sum(cmpy.PROPERTY_ANNUALREVENUE),0) AS r_amount,
             85 AS r_metric_id,
-            PROPERTY_NAME as r_segment_name,
-            Source_type as r_Source_type,
-            type as r_type,
+            cmpy.PROPERTY_NAME as r_segment_name,
+            cmpy.Source_type as r_Source_type,
+            calendar.type as r_type,
             timeframe_type as r_timeframe_type,
             year as r_year
-        from DBT_SALESDATAFLO.Stg_Company inner join calendar on to_date(PROPERTY_CREATEDATE)=CLDR_DATE
+        from DBT_SALESDATAFLO.Stg_Company cmpy inner join calendar on to_date(PROPERTY_CREATEDATE)=CLDR_DATE,DBT_SALESDATAFLO.Stg_Owner usr
          where 
          timeframe_type is not null
+         and cmpy.PROPERTY_HUBSPOT_OWNER_ID  =  usr.Source_OWNER_ID and cmpy.Source_type = usr.Source_type
          and to_date(PROPERTY_CREATEDATE) between calendar.start_date and calendar.end_date 
          group by 4,5,6,7,8
 
@@ -290,6 +312,6 @@
 )
 
 
-select * from compare_result --where r_type='Year' and r_metric_id= 85
+select * from compare_result where r_type='Year' and R_SOURCE_TYPE ='HS_RKLIVE_01042021' --and r_metric_id= 32
       );
     

@@ -1,0 +1,2 @@
+select *
+from DATAFLOTEST_DATABASE.linkedin_ads.ad_analytics_by_creative
