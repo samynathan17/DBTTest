@@ -95,9 +95,9 @@ WITH PERIOD AS(
             timeframe_type as r_timeframe_type,
             year as r_year
         from DBT_SALESDATAFLO.Stg_Lead led,PERIOD ,DBT_SALESDATAFLO.STG_USER  usr 
-        where UPPER(led.IS_CONVERTED) = 'FALSE'
-         and upper(led.status)='NEW'
-         and timeframe_type is not null
+        where --UPPER(led.IS_CONVERTED) = 'FALSE'
+         --and upper(led.status)='NEW'
+         timeframe_type is not null
          and owner_id=usr.source_id
          and led.Source_type=usr.Source_type
          and to_date(led.CREATED_DATE) between PERIOD.start_date and PERIOD.end_date
@@ -347,7 +347,7 @@ WITH PERIOD AS(
 
 )
 
-select * from compare_result  where 1=1
-  and R_SOURCE_TYPE ='HS_RKLIVE_01042021'
---  and r_metric_id=1
-  and r_type='Year'
+select * from compare_result  --where 1=1
+  --and R_SOURCE_TYPE ='HS_RKLIVE_01042021'
+  --and r_metric_id=4
+  --and r_type='Year'

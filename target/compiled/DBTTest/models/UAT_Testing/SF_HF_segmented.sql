@@ -309,4 +309,4 @@ WITH PERIOD AS(
 )
 
 
-select * from compare_result where r_type='Year' and R_SOURCE_TYPE ='HS_RKLIVE_01042021' --and r_metric_id= 32
+select * from compare_result --where r_type='Year' and R_SOURCE_TYPE ='HS_RKLIVE_01042021' --and r_metric_id= 32

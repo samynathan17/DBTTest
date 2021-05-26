@@ -278,6 +278,6 @@ With calendar AS(
 
 ) 
 
-select * from r_ads where 1=1
+select distinct r_source_type from r_ads --where 1=1
 --and r_metric_id=172 
-and r_source_type='FB_ADS_DRGRILL_30032021'
+--and r_source_type='FB_ADS_DRGRILL_30032021'

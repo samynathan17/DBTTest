@@ -156,54 +156,8 @@
          and to_date(DATE) between calendar.start_date and calendar.end_date 
          group by 3,4,5,6   
 
-      ---========================= 3.GSC =====================================================
-
-      union
-        select
-           
-            coalesce(sum(clicks), 0)  as r_value,
-            195 AS r_metric_id,
-            Source_type as r_Source_type,
-            calendar.type as r_type,
-            timeframe_type as r_timeframe_type,
-            year as r_year
-      from DBT_SALESDATAFLO.Stg_Site_Report_By_Site site inner join calendar on to_date(DATE)=CLDR_DATE
-         where 
-         timeframe_type is not null
-         and to_date(DATE) between calendar.start_date and calendar.end_date 
-         group by 3,4,5,6   
-
-     union
-        select
-           
-            coalesce(sum(impressions), 0)  as r_value,
-            198 AS r_metric_id,
-            Source_type as r_Source_type,
-            calendar.type as r_type,
-            timeframe_type as r_timeframe_type,
-            year as r_year
-      from DBT_SALESDATAFLO.Stg_Site_Report_By_Site site inner join calendar on to_date(DATE)=CLDR_DATE
-         where 
-         timeframe_type is not null
-         and to_date(DATE) between calendar.start_date and calendar.end_date 
-         group by 3,4,5,6         
-
-    union
-        select
-           
-            coalesce(sum(CTR), 0)  as r_value,
-            199 AS r_metric_id,
-            Source_type as r_Source_type,
-            calendar.type as r_type,
-            timeframe_type as r_timeframe_type,
-            year as r_year
-      from DBT_SALESDATAFLO.Stg_Site_Report_By_Site site inner join calendar on to_date(DATE)=CLDR_DATE
-         where 
-         timeframe_type is not null
-         and to_date(DATE) between calendar.start_date and calendar.end_date 
-         group by 3,4,5,6   
-
-       -- =============== 4. FB_ADS ===========================================================   
+      
+       -- =============== 3. FB_ADS ===========================================================   
 
        union
         select
@@ -327,8 +281,8 @@
 
 ) 
 
-select * from r_ads where 1=1
+select distinct r_source_type from r_ads --where 1=1
 --and r_metric_id=172 
-and r_source_type='FB_ADS_DRGRILL_30032021'
+--and r_source_type='FB_ADS_DRGRILL_30032021'
       );
     

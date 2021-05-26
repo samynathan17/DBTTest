@@ -8,8 +8,247 @@ With calendar AS(
      select CLDR_DATE,CLDR_QTR_STRT_DT as start_date,CLDR_QTR_END_DT as end_date,year,'Quarter' as type,MONTH_NAME,CLDR_WEEK_NUM,CLDR_QTR,UPPER(CLDR_QTR) as timeframe_type from DBT_SALESDATAFLO.DIM_CALENDAR
 
 ),r_metric AS(
+         
+         ---========================= 1.GA =====================================================
+        select
+           
+            coalesce(sum(SESSIONS_PER_USER), 0)  as r_value,
+            139 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Session ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6   
 
-    ---========================= 1.GSC =====================================================
+     union
+
+     select
+           
+            coalesce(sum(SESSIONS), 0)  as r_value,
+            140 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Channel_Traffic ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6       
+      
+      union
+
+     select
+           
+            coalesce(sum(PERCENT_NEW_SESSIONS), 0)  as r_value,
+            141 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Social_Media_Acquisitions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6       
+     
+     union
+
+     select
+           
+            coalesce(sum(NEW_USERS), 0)  as r_value,
+            142 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Social_Media_Acquisitions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6       
+
+      union
+
+     select
+           
+            coalesce(sum(PAGEVIEWS), 0)  as r_value,
+            143 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Social_Media_Acquisitions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6       
+
+     union
+
+     select
+           
+            coalesce(sum(PAGEVIEWS_PER_SESSION), 0)  as r_value,
+            144 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Page_Tracking ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6        
+
+     union
+
+     select
+           
+            coalesce(sum(BOUNCE_RATE), 0)  as r_value,
+            145 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Session ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6          
+
+     union
+
+     select
+           
+            coalesce(sum(AVG_SESSION_DURATION), 0)  as r_value,
+            147 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Social_Media_Acquisitions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6        
+
+      union
+
+     select
+           
+            coalesce(sum(GOAL_COMPLETIONS_ALL), 0)  as r_value,
+            151 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Goal_Conversions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6          
+
+      union
+
+     select
+           
+            coalesce(sum(GOAL_CONVERSION_RATE_ALL), 0)  as r_value,
+            152 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Goal_Conversions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6                          
+     
+     union
+
+     select
+           
+            coalesce(sum(TRANSACTIONS_PER_SESSION), 0)  as r_value,
+            158 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Social_Media_Acquisitions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6   
+
+     union
+
+     select
+           
+            coalesce(sum(TOTAL_EVENTS), 0)  as r_value,
+            163 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Events_Overview ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6      
+
+     union
+
+     select
+           
+            coalesce(Sum(TRANSACTIONS)/decode(Sum(NEW_USERS),0,1), 0)  as r_value,
+            164 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Social_Media_Acquisitions ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6                   
+
+     union
+
+     select
+           
+            coalesce(Sum(TIME_ON_PAGE), 0)  as r_value,
+            166 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Page_Tracking ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6                                             
+      union
+
+     select
+           
+            coalesce(Sum(UNIQUE_PAGEVIEWS), 0)  as r_value,
+            167 AS r_metric_id,
+            Source_type as r_Source_type,
+            calendar.type as r_type,
+            timeframe_type as r_timeframe_type,
+            year as r_year
+      from DBT_SALESDATAFLO.Stg_Page_Tracking ga inner join calendar on to_date(DATE)=CLDR_DATE
+         where 
+         timeframe_type is not null
+         and to_date(DATE) between calendar.start_date and calendar.end_date 
+         group by 3,4,5,6                  
+
+    ---========================= 2.GSC =====================================================
+       union
 
         select
            
@@ -71,7 +310,7 @@ With calendar AS(
         --and fm.ENTITY_CODE = 'GSC_ANANDLIVE_14052021'
         and REPORT_DATE between cldr.CLDR_YEAR_START_DT and cldr.CLDR_YEAR_END_DT 
         --and METRIC_ID=198
-        and YEAREND_FLAG='TRUE'
+        --and YEAREND_FLAG='TRUE'
      group by 2,3,4,5,6
 
      union
@@ -87,10 +326,8 @@ With calendar AS(
         inner join DBT_SALESDATAFLO.DIM_CALENDAR as cldr on fm.REPORT_DATE=cldr.CLDR_DATE
      where 
         TIMEFRAME_TYPE='Q'
-        --and fm.ENTITY_CODE = 'GSC_ANANDLIVE_14052021'
         and REPORT_DATE between cldr.CLDR_QTR_STRT_DT and cldr.CLDR_QTR_END_DT 
-        --and METRIC_ID=198
-        and QUARTEREND_FLAG='TRUE'
+        --and QUARTEREND_FLAG='TRUE'
      group by 2,3,4,5,6
 
      union
@@ -106,12 +343,9 @@ With calendar AS(
         inner join DBT_SALESDATAFLO.DIM_CALENDAR as cldr on fm.REPORT_DATE=cldr.CLDR_DATE
      where 
         TIMEFRAME_TYPE='M'
-        --and fm.ENTITY_CODE = 'GSC_ANANDLIVE_14052021'
         and REPORT_DATE between cldr.CLDR_MNTH_STRT_DT and cldr.CLDR_MNTH_END_DT 
-        --and METRIC_ID=198
-        and MONTHEND_FLAG='TRUE'
+        --and MONTHEND_FLAG='TRUE'
      group by 2,3,4,5,6
-
 
      union
 
@@ -126,10 +360,8 @@ With calendar AS(
         inner join DBT_SALESDATAFLO.DIM_CALENDAR as cldr on fm.REPORT_DATE=cldr.CLDR_DATE
      where 
         TIMEFRAME_TYPE='W'
-        --and fm.ENTITY_CODE = 'GSC_ANANDLIVE_14052021'
         and REPORT_DATE between cldr.WEEK_START_DATE and cldr.WEEK_END_DATE 
-        --and METRIC_ID=198
-        and WEEKEND_FLAG='TRUE'
+        --and WEEKEND_FLAG='TRUE'
      group by 2,3,4,5,6
 
 
@@ -171,4 +403,4 @@ With calendar AS(
 
 
 
-select * from compare_result where f_entity_code='GSC_ANANDLIVE_14052021' and f_metric_id=198
+select * from compare_result --where r_type='Year' and r_metric_id=140 --and f_entity_code='GSC_ANANDLIVE_14052021'   
